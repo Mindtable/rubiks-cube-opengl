@@ -1,0 +1,8 @@
+//
+// Created by MTBLE on 20.01.2022.
+//
+
+#ifndef GLUT_TEST_COMPILE_SHADER_H
+#define GLUT_TEST_COMPILE_SHADER_H
+
+#endif //GLUT_TEST_COMPILE_SHADER_H
