@@ -121,3 +121,7 @@ GLuint Shader::CreateShader(const std::string &vertexShader, const std::string &
 void Shader::SetUniform1i(const std::string &name, GLint value) {
     glUniform1i(GetUniformLocation(name), value);
 }
+
+void Shader::SetUniform3f(const std::string &name, GLfloat v0, GLfloat v1, GLfloat v2) {
+    glUniform3f(GetUniformLocation(name), v0, v1, v2);
+}

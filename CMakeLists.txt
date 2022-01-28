@@ -11,18 +11,19 @@ add_subdirectory(stb-cmake)
 add_executable(glut_test
         main.cpp
         Renderer.cpp Renderer.h
-        VertexBuffer.cpp VertexBuffer.h
-        IndexBuffer.cpp IndexBuffer.h
-        VertexArray.cpp VertexArray.h
-        VertexBufferLayout.cpp VertexBufferLayout.h
-        Shader.cpp Shader.h
+        src/BasicOpenglObj/VertexBuffer.cpp src/BasicOpenglObj/VertexBuffer.h
+        src/BasicOpenglObj/IndexBuffer.cpp src/BasicOpenglObj/IndexBuffer.h
+        src/BasicOpenglObj/VertexArray.cpp src/BasicOpenglObj/VertexArray.h
+        src/BasicOpenglObj/VertexBufferLayout.cpp src/BasicOpenglObj/VertexBufferLayout.h
+        src/BasicOpenglObj/Shader.cpp src/BasicOpenglObj/Shader.h
         stb_image.cpp
-        Texture.cpp Texture.h
+        src/BasicOpenglObj/Texture.cpp src/BasicOpenglObj/Texture.h
         VisualCube/VisualCube.cpp VisualCube/VisualCube.h
         VisualCube/Cube.h VisualCube/dependences.h
         VisualCube/Solver.h
-        VisualCube/Cube.cpp)
+        Controller.h Controller.cpp
+        VisualCube/Cube.cpp src/BasicOpenglObj/BasicRenderer.cpp src/BasicOpenglObj/BasicRenderer.h)
 
 target_include_directories(glut_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/glfw/include)
 target_include_directories(glut_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/glew/include)
-target_link_libraries(glut_test glfw libglew_static glm stb::image)
+target_link_libraries(glut_test glfw libglew_static glm stb::image )

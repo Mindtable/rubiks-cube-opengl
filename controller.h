@@ -1,8 +1,0 @@
-//
-// Created by MTBLE on 21.01.2022.
-//
-
-#ifndef GLUT_TEST_CONTROLLER_H
-#define GLUT_TEST_CONTROLLER_H
-
-#endif //GLUT_TEST_CONTROLLER_H

@@ -3,6 +3,8 @@
 //
 
 #include "dependences.h"
+#include <set>
+#include <algorithm>
 
 #ifndef GEN_ALGO_CUBE_H
 #define GEN_ALGO_CUBE_H
@@ -15,9 +17,9 @@ private:
 
     std::map<std::string, std::function<void()>> mapping2;
     int fitness;
-public:
-
     std::list<std::string> route;
+
+public:
     Cube() {
         for (int i = Front; i != Back + 1; ++i) {
             faces[static_cast<Side>(i)] = side_matrix(3, side_row(3, static_cast<Color>(i)));
@@ -81,6 +83,14 @@ public:
         refresh_fitness();
     }
 
+    void ClearRoute() {
+        route.clear();
+    }
+
+    std::list<std::string> &GetRoute() {
+        return route;
+    }
+
     void fromfile(const char *filename) {
         std::ifstream fin(filename);
 
@@ -121,16 +131,14 @@ public:
         fout << gen_cubestring(format);
     }
 
-    bool is_correct() {
-        ;
-    }
+    bool is_correct();
 
     //FIXME
 public:
     std::map<Side, side_matrix> faces;
 
 private:
-    std::string gen_formatted_string() {
+    std::string gen_formatted_string(){
         std::string cubestring;
         std::string mapping = "GORWYB";
 

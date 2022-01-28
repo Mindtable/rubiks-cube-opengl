@@ -33,6 +33,7 @@ public:
 
     //Set uniforms
     void SetUniform4f(const std::string &name, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
+    void SetUniform3f(const std::string &name, GLfloat v0, GLfloat v1, GLfloat v2);
     void SetUniformMatrix4fv(const std::string &name, glm::mat4 &matrix);
     void SetUniform1i(const std::string &name, GLint value);
 };

@@ -25,7 +25,7 @@ public:
         srand(time(nullptr));;
     }
 
-    void solve(const std::string &scramble) {
+    std::string solve(const std::string &scramble) {
         for (int r = 0; r != HowManyWorlds; ++r) {
 //            std::cout << "try " << r +1 << std::endl;
 
@@ -57,12 +57,14 @@ public:
                     if (cubes[i].get_fitness() == 0) {
                         //FIXME
 //                        cubes[i].print();
+                        std::string solution;
                         std::cout << "Solution (including start permutation)\n";
-                        for (const auto &elem: cubes[i].route) {
+                        for (const auto &elem: cubes[i].GetRoute()) {
+                            solution += elem + " ";
                             std::cout << elem << " ";
                         }
                         std::cout << std::endl;
-                        return;
+                        return solution;
                     }
 
                     if (i > Elitaria) {

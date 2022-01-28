@@ -18,20 +18,20 @@
 
 enum Color {
     Green = 0,
-    Orange,
-    Red,
-    White,
-    Yellow,
-    Blue
+    Orange = 1,
+    Red = 2,
+    White = 3,
+    Yellow = 4,
+    Blue = 5
 };
 
 enum Side {
     Front = 0,
-    Left,
-    Right,
-    Top,
-    Bottom,
-    Back
+    Left = 1,
+    Right = 2,
+    Top = 3,
+    Bottom = 4,
+    Back = 5
 };
 
 namespace Moves {

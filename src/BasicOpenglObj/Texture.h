@@ -2,7 +2,8 @@
 // Created by MTBLE on 22.01.2022.
 //
 
-#include "Renderer.h"
+#include "dependences.h"
+//#include "Renderer.h"
 
 #ifndef GLUT_TEST_TEXTURE_H
 #define GLUT_TEST_TEXTURE_H
