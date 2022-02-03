@@ -55,7 +55,6 @@ void Renderer::Swap() {
 }
 
 void Renderer::InitTextures() {
-    //FIXME add relative path
     m_Color.reserve(6);
 
     //FIXME these uniforms could be excessive
@@ -114,7 +113,15 @@ void Renderer::Show() {
 
     VisualCube res_cube;
 
-    CubeStatus CubeCorrect = CubeStatus::Correct;
+    Status CubeCorrect = Status::Correct;
+    Status AnimationSkip = Status::Incorrect;
+
+    Solver m_Solver(500, 300, 10, 50);
+
+    //FIXME
+    bool solving = false;
+    bool transfered = true;
+    std::string solution;
 
     while (!glfwWindowShouldClose(m_Window)) {
 
@@ -124,6 +131,30 @@ void Renderer::Show() {
 
         if (glfwGetKey(m_Window, GLFW_KEY_Q) == GLFW_PRESS) {
             AnimationNeeded = true;
+        }
+
+        if (glfwGetKey(m_Window, GLFW_KEY_S) == GLFW_PRESS && !solving) {
+            if (!m_VisualCube.is_correct()) {
+                std::cout << "Naughty boy! You can't solve incorrect cube!" << std::endl;
+            } else {
+                std::thread thr([&m_Solver, this, &solution, &transfered]() {
+                    this->m_VisualCube.ClearRoute();
+                    solution = m_Solver.solve(this->m_VisualCube);
+                    std::cout << "Solution found" << std::endl;
+                    transfered = false;
+                });
+                thr.detach();
+                solving = true;
+            }
+        }
+
+        if (!transfered) {
+            m_Controller.ComputeRotations(m_RotationOrder, m_Window, solution);
+            transfered = true;
+        }
+
+        if (glfwGetKey(m_Window, GLFW_KEY_S) == GLFW_RELEASE && solving) {
+            solving = false;
         }
 
         m_Shader.SetUniform3f("u_CameraPos", 11.0123f,  6.59808f,  7.06434f);
@@ -157,16 +188,17 @@ void Renderer::Show() {
         m_Shader.SetUniformMatrix4fv("u_Floating", floating);
 
         if (FileReader == State::NotWorking){
+            m_Controller.GetAnimationSkipStatus(m_Window, AnimationSkip);
+
             m_Controller.ComputeRotations(m_RotationOrder, m_Window);
 
             m_Controller.ComputeProjectionView(m_Shader, m_Window);
 
-            file_status = m_Controller.FileWorkingCheck(m_Window);
+            m_Controller.FileWorkingCheck(m_Window, file_status);
 
-            CubeStatus res = m_Controller.CheckCorrect(m_Window, m_VisualCube);
-            if (res != CubeStatus::DontAsked) {
-                CubeCorrect = res;
-            }
+            m_Controller.CheckCorrect(m_Window, m_VisualCube, CubeCorrect);
+
+            m_Controller.Shuffle(m_Window, m_VisualCube, m_RotationOrder);
         }
 
         if (FileReader == State::ReadyToDrop) {
@@ -195,6 +227,7 @@ void Renderer::Show() {
                 }
             });
             thr.detach();
+
         } else if (file_status == FileStatus::Write) {
             file_status = FileStatus::DoNothing;
             std::thread thr([&FileReader, this](){
@@ -217,6 +250,10 @@ void Renderer::Show() {
             } else {
                 m_MaxAngle = 3.14f / 2.0f;
             }
+
+            if (AnimationSkip == Status::Correct) {
+                m_Angle = m_MaxAngle + 0.0001f;
+            }
         }
 
         DrawCubes();
@@ -228,7 +265,6 @@ void Renderer::DrawCubes() {
     for (int x = 0; x != 3; ++x) {
         for (int y = 0; y != 3; ++y) {
             for (int z = 0; z != 3; ++z) {
-//                std::cerr << "Drawing " << x << " " << y << " " << z << std::endl;
                 DrawCube(x, y, z);
             }
         }
@@ -249,9 +285,6 @@ void Renderer::DrawCube(int x, int y, int z) {
         } else if (rot.CubesToRotateX.count(x) ||
                    rot.CubesToRotateY.count(y) ||
                    rot.CubesToRotateZ.count(z)) {
-
-//            std::cerr << m_Angle << std::endl;
-
             ModelMatrix = myrotate(rot.axis, rot.point, m_Angle) * ModelMatrix;
         }
     }
@@ -261,14 +294,6 @@ void Renderer::DrawCube(int x, int y, int z) {
 
     std::vector<Color> colors(6, Blue);
     m_VisualCube.GetColor(colors, x, y, z);
-
-    //FIXME these bindings could be excessive
-//    m_Color[Green].Bind(0);
-//    m_Color[Orange].Bind(1);
-//    m_Color[Red].Bind(2);
-//    m_Color[White].Bind(3);
-//    m_Color[Yellow].Bind(4);
-//    m_Color[Blue].Bind(5);
 
     for (int i = Front; i != Back + 1; ++i) {
         m_Shader.SetUniform1i("u_NumberTexture", colors[i]);

@@ -5,6 +5,7 @@
 #include "dependences.h"
 #include <set>
 #include <algorithm>
+#include <random>
 
 #ifndef GEN_ALGO_CUBE_H
 #define GEN_ALGO_CUBE_H
@@ -63,9 +64,15 @@ public:
     }
 
     void exec_move(const std::string &input) {
-        mapping2.at(input)();
-        route.push_back(input);
-        refresh_fitness();
+        try {
+            mapping2.at(input)();
+            route.push_back(input);
+            refresh_fitness();
+        } catch (std::exception &ex) {
+            std::cerr << "FAIL 1" << std::endl;
+            std::cerr << input << " " << input.size() << std::endl;
+            throw ex;
+        }
     }
 
     void exec_perm(const std::string &input) {
@@ -76,6 +83,7 @@ public:
                 mapping2.at(move)();
                 route.push_back(move);
             } catch (const std::exception &ex) {
+                std::cerr << "Failed " << move << std::endl;
                 throw std::out_of_range(move);
             }
         }
@@ -133,7 +141,7 @@ public:
 
     bool is_correct();
 
-    //FIXME
+    std::string shuffle();
 public:
     std::map<Side, side_matrix> faces;
 
@@ -169,7 +177,6 @@ private:
             }
             cubestring += "\n";
         }
-
         for (int i = 0; i != 3; ++i) {
             cubestring += "      ";
             for (int j = 0; j != 3; ++j) {
@@ -178,11 +185,6 @@ private:
             }
             cubestring += "\n";
         }
-
-//        for (const auto &elem: route) {
-//            std::cout << elem << " ";
-//        }
-//        std::cout << "\n";
         return cubestring;
     }
 

@@ -161,7 +161,8 @@ private:
     ////Лишний блок
     std::list<Rotation> m_RotationOrder;
     GLfloat m_Angle;
-    GLfloat m_Delta = 0.05f;
+//    GLfloat m_Delta = 0.05f; //FIXME
+    GLfloat m_Delta = 0.15f;
     GLfloat m_MaxAngle = 3.14f / 2.0f;
 
 public:

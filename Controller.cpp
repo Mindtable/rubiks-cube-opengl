@@ -67,10 +67,6 @@ void Controller::ComputeProjectionView(Shader &shader, GLFWwindow *window) {
     // Up vector
     glm::vec3 up = glm::cross(right, direction);
 
-    if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
-        std::cerr << m_Position.x << " " << m_Position.y << " " << m_Position.z << std::endl;
-        std::cerr << m_HorizontalAngle << " " << m_VerticalAngle << std::endl;
-    }
     if (moving) {
         // Move forward
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
@@ -113,50 +109,20 @@ void Controller::ComputeProjectionView(Shader &shader, GLFWwindow *window) {
 }
 
 void Controller::ComputeRotations(std::list<Rotation> &RotationOrder, GLFWwindow *window) {
-    //FIXME fixed point for rotation
-
     //// Z rotation
     GLint key = GLFW_KEY_0;
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS &&
         glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
-        Rotation rot;
-        rot.deltaSign = 1.0f;
-        rot.axis = glm::vec3(0.0f, 0.0f, 1.0f);
-        rot.point = glm::vec3(2.0f, 2.0f, 0.0f);
-        rot.CubesToRotateX.insert(2);
-        rot.CubesToRotateX.insert(0);
-        rot.CubesToRotateX.insert(1);
-        rot.Move = "z2";
-
-        RotationOrder.push_back(rot);
+        RotationOrder.push_back(m_RotationMapping["z2"]);
 
         m_KeyPressed[key] = true;
     } else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS &&
                glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
-        Rotation rot;
-        rot.deltaSign = 1.0f;
-        rot.axis = glm::vec3(0.0f, 0.0f, 1.0f);
-        rot.point = glm::vec3(2.0f, 2.0f, 0.0f);
-        rot.CubesToRotateX.insert(2);
-        rot.CubesToRotateX.insert(0);
-        rot.CubesToRotateX.insert(1);
-        rot.Move = "z'";
-
-        RotationOrder.push_back(rot);
+        RotationOrder.push_back(m_RotationMapping[ "z'"]);
 
         m_KeyPressed[key] = true;
     } else if (glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
-
-        Rotation rot;
-        rot.deltaSign = -1.0f;
-        rot.axis = glm::vec3(0.0f, 0.0f, 1.0f);
-        rot.point = glm::vec3(2.0f, 2.0f, 0.0f);
-        rot.CubesToRotateX.insert(2);
-        rot.CubesToRotateX.insert(0);
-        rot.CubesToRotateX.insert(1);
-        rot.Move = "z";
-
-        RotationOrder.push_back(rot);
+        RotationOrder.push_back(m_RotationMapping["z"]);
 
         m_KeyPressed[key] = true;
     }
@@ -172,45 +138,19 @@ void Controller::ComputeRotations(std::list<Rotation> &RotationOrder, GLFWwindow
 
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS &&
         glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
-
-        Rotation rot;
-        rot.deltaSign = 1.0f;
-        rot.axis = glm::vec3(0.0f, 1.0f, 0.0f);
-        rot.point = glm::vec3(2.0f, 4.0f, -2.0f);
-        rot.CubesToRotateX.insert(2);
-        rot.CubesToRotateX.insert(0);
-        rot.CubesToRotateX.insert(1);
-        rot.Move = "y2";
-
-        RotationOrder.push_back(rot);
+        RotationOrder.push_back(m_RotationMapping["y2"]);
 
         m_KeyPressed[key] = true;
     } else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS &&
                glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
-        Rotation rot;
-        rot.deltaSign = 1.0f;
-        rot.axis = glm::vec3(0.0f, 1.0f, 0.0f);
-        rot.point = glm::vec3(2.0f, 4.0f, -2.0f);
-        rot.CubesToRotateX.insert(2);
-        rot.CubesToRotateX.insert(0);
-        rot.CubesToRotateX.insert(1);
-        rot.Move = "y'";
 
-        RotationOrder.push_back(rot);
+        RotationOrder.push_back(m_RotationMapping[ "y'"]);
 
         m_KeyPressed[key] = true;
     } else if (glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
 
-        Rotation rot;
-        rot.deltaSign = -1.0f;
-        rot.axis = glm::vec3(0.0f, 1.0f, 0.0f);
-        rot.point = glm::vec3(2.0f, 4.0f, -2.0f);
-        rot.CubesToRotateX.insert(2);
-        rot.CubesToRotateX.insert(0);
-        rot.CubesToRotateX.insert(1);
-        rot.Move = "y";
 
-        RotationOrder.push_back(rot);
+        RotationOrder.push_back(m_RotationMapping["y"]);
 
         m_KeyPressed[key] = true;
     }
@@ -225,45 +165,19 @@ void Controller::ComputeRotations(std::list<Rotation> &RotationOrder, GLFWwindow
     key = GLFW_KEY_8;
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS &&
         glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
-        Rotation test;
-        test.deltaSign = 1.0f;
-        test.axis = glm::vec3(1.0f, 0.0f, 0.0f);
-        test.point = glm::vec3(4.0f, 2.0f, -2.0f);
-        test.CubesToRotateX.insert(2);
-        test.CubesToRotateX.insert(0);
-        test.CubesToRotateX.insert(1);
-        test.Move = "x2";
 
-        RotationOrder.push_back(test);
+        RotationOrder.push_back(m_RotationMapping["x2"]);
 
         m_KeyPressed[key] = true;
     } else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS &&
                glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
 
-        Rotation test;
-        test.deltaSign = 1.0f;
-        test.axis = glm::vec3(1.0f, 0.0f, 0.0f);
-        test.point = glm::vec3(4.0f, 2.0f, -2.0f);
-        test.CubesToRotateX.insert(2);
-        test.CubesToRotateX.insert(0);
-        test.CubesToRotateX.insert(1);
-        test.Move = "x'";
-
-        RotationOrder.push_back(test);
+        RotationOrder.push_back(m_RotationMapping["x'"]);
 
         m_KeyPressed[key] = true;
 
     } else if (glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
-        Rotation test;
-        test.deltaSign = -1.0f;
-        test.axis = glm::vec3(1.0f, 0.0f, 0.0f);
-        test.point = glm::vec3(4.0f, 2.0f, -2.0f);
-        test.CubesToRotateX.insert(2);
-        test.CubesToRotateX.insert(0);
-        test.CubesToRotateX.insert(1);
-        test.Move = "x";
-
-        RotationOrder.push_back(test);
+        RotationOrder.push_back(m_RotationMapping["x"]);
 
         m_KeyPressed[key] = true;
     }
@@ -277,39 +191,16 @@ void Controller::ComputeRotations(std::list<Rotation> &RotationOrder, GLFWwindow
     key = GLFW_KEY_I;
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS &&
         glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
-
-        Rotation rot;
-        rot.deltaSign = 1.0f;
-        rot.axis = glm::vec3(0.0f, 1.0f, 0.0f);
-        rot.point = glm::vec3(2.0f, 4.0f, -2.0f);
-        rot.CubesToRotateY.insert(2);
-        rot.Move = "U2";
-
-        RotationOrder.push_back(rot);
+        RotationOrder.push_back(m_RotationMapping["U2"]);
 
         m_KeyPressed[key] = true;
     } else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS &&
                glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
-        Rotation rot;
-        rot.deltaSign = 1.0f;
-        rot.axis = glm::vec3(0.0f, 1.0f, 0.0f);
-        rot.point = glm::vec3(2.0f, 4.0f, -2.0f);
-        rot.CubesToRotateY.insert(2);
-        rot.Move = "U'";
-
-        RotationOrder.push_back(rot);
+        RotationOrder.push_back(m_RotationMapping["U'"]);
 
         m_KeyPressed[key] = true;
     } else if (glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
-
-        Rotation rot;
-        rot.deltaSign = -1.0f;
-        rot.axis = glm::vec3(0.0f, 1.0f, 0.0f);
-        rot.point = glm::vec3(2.0f, 4.0f, -2.0f);
-        rot.CubesToRotateY.insert(2);
-        rot.Move = "U";
-
-        RotationOrder.push_back(rot);
+        RotationOrder.push_back(m_RotationMapping["U"]);
 
         m_KeyPressed[key] = true;
     }
@@ -324,39 +215,17 @@ void Controller::ComputeRotations(std::list<Rotation> &RotationOrder, GLFWwindow
     key = GLFW_KEY_K;
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS &&
         glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
-
-        Rotation rot;
-        rot.deltaSign = 1.0f;
-        rot.axis = glm::vec3(0.0f, 1.0f, 0.0f);
-        rot.point = glm::vec3(2.0f, 4.0f, -2.0f);
-        rot.CubesToRotateY.insert(0);
-        rot.Move = "D2";
-
-        RotationOrder.push_back(rot);
+        RotationOrder.push_back(m_RotationMapping["D2"]);
 
         m_KeyPressed[key] = true;
     } else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS &&
                glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
-        Rotation rot;
-        rot.deltaSign = -1.0f;
-        rot.axis = glm::vec3(0.0f, 1.0f, 0.0f);
-        rot.point = glm::vec3(2.0f, 4.0f, -2.0f);
-        rot.CubesToRotateY.insert(0);
-        rot.Move = "D'";
-
-        RotationOrder.push_back(rot);
+        RotationOrder.push_back(m_RotationMapping["D'"]);
 
         m_KeyPressed[key] = true;
     } else if (glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
 
-        Rotation rot;
-        rot.deltaSign = 1.0f;
-        rot.axis = glm::vec3(0.0f, 1.0f, 0.0f);
-        rot.point = glm::vec3(2.0f, 4.0f, -2.0f);
-        rot.CubesToRotateY.insert(0);
-        rot.Move = "D";
-
-        RotationOrder.push_back(rot);
+        RotationOrder.push_back(m_RotationMapping["D"]);
 
         m_KeyPressed[key] = true;
     }
@@ -371,38 +240,16 @@ void Controller::ComputeRotations(std::list<Rotation> &RotationOrder, GLFWwindow
     key = GLFW_KEY_O;
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS &&
         glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
-        Rotation rot;
-        rot.deltaSign = 1.0f;
-        rot.axis = glm::vec3(0.0f, 0.0f, 1.0f);
-        rot.point = glm::vec3(2.0f, 2.0f, 0.0f);
-        rot.CubesToRotateZ.insert(0);
-        rot.Move = "F2";
-
-        RotationOrder.push_back(rot);
+        RotationOrder.push_back(m_RotationMapping["F2"]);
 
         m_KeyPressed[key] = true;
     } else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS &&
                glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
-        Rotation rot;
-        rot.deltaSign = 1.0f;
-        rot.axis = glm::vec3(0.0f, 0.0f, 1.0f);
-        rot.point = glm::vec3(2.0f, 2.0f, 0.0f);
-        rot.CubesToRotateZ.insert(0);
-        rot.Move = "F'";
-
-        RotationOrder.push_back(rot);
+        RotationOrder.push_back(m_RotationMapping["F'"]);
 
         m_KeyPressed[key] = true;
     } else if (glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
-
-        Rotation rot;
-        rot.deltaSign = -1.0f;
-        rot.axis = glm::vec3(0.0f, 0.0f, 1.0f);
-        rot.point = glm::vec3(2.0f, 2.0f, 0.0f);
-        rot.CubesToRotateZ.insert(0);
-        rot.Move = "F";
-
-        RotationOrder.push_back(rot);
+        RotationOrder.push_back(m_RotationMapping["F"]);
 
         m_KeyPressed[key] = true;
     }
@@ -418,38 +265,17 @@ void Controller::ComputeRotations(std::list<Rotation> &RotationOrder, GLFWwindow
     key = GLFW_KEY_L;
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS &&
         glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
-        Rotation rot;
-        rot.deltaSign = 1.0f;
-        rot.axis = glm::vec3(0.0f, 0.0f, 1.0f);
-        rot.point = glm::vec3(2.0f, 2.0f, 0.0f);
-        rot.CubesToRotateZ.insert(2);
-        rot.Move = "B2";
-
-        RotationOrder.push_back(rot);
+        RotationOrder.push_back(m_RotationMapping["B2"]);
 
         m_KeyPressed[key] = true;
     } else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS &&
                glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
-        Rotation rot;
-        rot.deltaSign = -1.0f;
-        rot.axis = glm::vec3(0.0f, 0.0f, 1.0f);
-        rot.point = glm::vec3(2.0f, 2.0f, 0.0f);
-        rot.CubesToRotateZ.insert(2);
-        rot.Move = "B'";
-
-        RotationOrder.push_back(rot);
+        RotationOrder.push_back(m_RotationMapping["B'"]);
 
         m_KeyPressed[key] = true;
     } else if (glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
 
-        Rotation rot;
-        rot.deltaSign = 1.0f;
-        rot.axis = glm::vec3(0.0f, 0.0f, 1.0f);
-        rot.point = glm::vec3(2.0f, 2.0f, 0.0f);
-        rot.CubesToRotateZ.insert(2);
-        rot.Move = "B";
-
-        RotationOrder.push_back(rot);
+        RotationOrder.push_back(m_RotationMapping["B"]);
 
         m_KeyPressed[key] = true;
     }
@@ -464,39 +290,19 @@ void Controller::ComputeRotations(std::list<Rotation> &RotationOrder, GLFWwindow
     key = GLFW_KEY_P;
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS &&
         glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
-        Rotation test;
-        test.deltaSign = 1.0f;
-        test.axis = glm::vec3(1.0f, 0.0f, 0.0f);
-        test.point = glm::vec3(4.0f, 2.0f, -2.0f);
-        test.CubesToRotateX.insert(2);
-        test.Move = "R2";
 
-        RotationOrder.push_back(test);
+        RotationOrder.push_back(m_RotationMapping["R2"]);
 
         m_KeyPressed[key] = true;
     } else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS &&
                glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
 
-        Rotation test;
-        test.deltaSign = 1.0f;
-        test.axis = glm::vec3(1.0f, 0.0f, 0.0f);
-        test.point = glm::vec3(4.0f, 2.0f, -2.0f);
-        test.CubesToRotateX.insert(2);
-        test.Move = "R'";
-
-        RotationOrder.push_back(test);
+        RotationOrder.push_back(m_RotationMapping["R'"]);
 
         m_KeyPressed[key] = true;
 
     } else if (glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
-        Rotation test;
-        test.deltaSign = -1.0f;
-        test.axis = glm::vec3(1.0f, 0.0f, 0.0f);
-        test.point = glm::vec3(4.0f, 2.0f, -2.0f);
-        test.CubesToRotateX.insert(2);
-        test.Move = "R";
-
-        RotationOrder.push_back(test);
+        RotationOrder.push_back(m_RotationMapping["R"]);
 
         m_KeyPressed[key] = true;
     }
@@ -510,39 +316,21 @@ void Controller::ComputeRotations(std::list<Rotation> &RotationOrder, GLFWwindow
     key = GLFW_KEY_SEMICOLON;
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS &&
         glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
-        Rotation test;
-        test.deltaSign = 1.0f;
-        test.axis = glm::vec3(1.0f, 0.0f, 0.0f);
-        test.point = glm::vec3(4.0f, 2.0f, -2.0f);
-        test.CubesToRotateX.insert(0);
-        test.Move = "L2";
 
-        RotationOrder.push_back(test);
+        RotationOrder.push_back(m_RotationMapping["L2"]);
 
         m_KeyPressed[key] = true;
     } else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS &&
                glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
 
-        Rotation test;
-        test.deltaSign = -1.0f;
-        test.axis = glm::vec3(1.0f, 0.0f, 0.0f);
-        test.point = glm::vec3(4.0f, 2.0f, -2.0f);
-        test.CubesToRotateX.insert(0);
-        test.Move = "L'";
 
-        RotationOrder.push_back(test);
+        RotationOrder.push_back(m_RotationMapping["L'"]);
 
         m_KeyPressed[key] = true;
 
     } else if (glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
-        Rotation test;
-        test.deltaSign = 1.0f;
-        test.axis = glm::vec3(1.0f, 0.0f, 0.0f);
-        test.point = glm::vec3(4.0f, 2.0f, -2.0f);
-        test.CubesToRotateX.insert(0);
-        test.Move = "L";
 
-        RotationOrder.push_back(test);
+        RotationOrder.push_back(m_RotationMapping["L"]);
 
         m_KeyPressed[key] = true;
     }
@@ -556,39 +344,20 @@ void Controller::ComputeRotations(std::list<Rotation> &RotationOrder, GLFWwindow
     key = GLFW_KEY_APOSTROPHE;
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS &&
         glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
-        Rotation test;
-        test.deltaSign = 1.0f;
-        test.axis = glm::vec3(1.0f, 0.0f, 0.0f);
-        test.point = glm::vec3(4.0f, 2.0f, -2.0f);
-        test.CubesToRotateX.insert(1);
-        test.Move = "M2";
 
-        RotationOrder.push_back(test);
+        RotationOrder.push_back(m_RotationMapping["M2"]);
 
         m_KeyPressed[key] = true;
     } else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS &&
                glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
 
-        Rotation test;
-        test.deltaSign = -1.0f;
-        test.axis = glm::vec3(1.0f, 0.0f, 0.0f);
-        test.point = glm::vec3(4.0f, 2.0f, -2.0f);
-        test.CubesToRotateX.insert(1);
-        test.Move = "M'";
 
-        RotationOrder.push_back(test);
+        RotationOrder.push_back(m_RotationMapping["M'"]);
 
         m_KeyPressed[key] = true;
 
     } else if (glfwGetKey(window, key) == GLFW_PRESS && !m_KeyPressed[key]) {
-        Rotation test;
-        test.deltaSign = 1.0f;
-        test.axis = glm::vec3(1.0f, 0.0f, 0.0f);
-        test.point = glm::vec3(4.0f, 2.0f, -2.0f);
-        test.CubesToRotateX.insert(1);
-        test.Move = "M";
-
-        RotationOrder.push_back(test);
+        RotationOrder.push_back(m_RotationMapping["M"]);
 
         m_KeyPressed[key] = true;
     }
@@ -599,7 +368,7 @@ void Controller::ComputeRotations(std::list<Rotation> &RotationOrder, GLFWwindow
     ////M end
 }
 
-FileStatus Controller::FileWorkingCheck(GLFWwindow *window) {
+void Controller::FileWorkingCheck(GLFWwindow *window, FileStatus &file_status) {
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_RELEASE && m_KeyPressed[GLFW_KEY_R]) {
         m_KeyPressed[GLFW_KEY_R] = false;
     }
@@ -610,27 +379,66 @@ FileStatus Controller::FileWorkingCheck(GLFWwindow *window) {
 
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS && !m_KeyPressed[GLFW_KEY_R]) {
         m_KeyPressed[GLFW_KEY_R] = true;
-        return FileStatus::Read;
+        file_status = FileStatus::Read;
     }
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && !m_KeyPressed[GLFW_KEY_W]) {
         m_KeyPressed[GLFW_KEY_W] = true;
-        return FileStatus::Write;
+        file_status = FileStatus::Write;
     }
-
-    return FileStatus::DoNothing;
 }
 
-CubeStatus Controller::CheckCorrect(GLFWwindow *window, VisualCube& cube) {
+void Controller::CheckCorrect(GLFWwindow *window, VisualCube &cube, Status &CubeStatus) {
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS && !m_KeyPressed[GLFW_KEY_A]) {
         m_KeyPressed[GLFW_KEY_A] = true;
         if (cube.is_correct()) {
-            return CubeStatus::Correct;
+            CubeStatus = Status::Correct;
         } else {
-            return CubeStatus::Incorrect;
+            CubeStatus = Status::Incorrect;
         }
     } else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_RELEASE && m_KeyPressed[GLFW_KEY_A]) {
         m_KeyPressed[GLFW_KEY_A] = false;
     }
-    return CubeStatus::DontAsked;
 }
+
+void Controller::ComputeRotations(std::list<Rotation> &RotationOrder, GLFWwindow *window, const std::string &solution) {
+    std::istringstream parcer(solution);
+    std::string move;
+    while (parcer >> move) {
+        auto rot = m_RotationMapping[move.c_str()];
+        auto kek = move.c_str();
+        RotationOrder.push_back(m_RotationMapping[move]);
+    }
+}
+
+void Controller::GetAnimationSkipStatus(GLFWwindow *window, Status &AnimationSkip) {
+    if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS && !m_KeyPressed[GLFW_KEY_ENTER]) {
+        if (AnimationSkip == Status::Correct) {
+            std::cout << "Animation enabled" << std::endl;
+            AnimationSkip = Status::Incorrect;
+        } else if (AnimationSkip == Status::Incorrect) {
+            std::cout << "Animation disabled" << std::endl;
+            AnimationSkip = Status::Correct;
+        }
+        m_KeyPressed[GLFW_KEY_ENTER] = true;
+    } else if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_RELEASE && m_KeyPressed[GLFW_KEY_ENTER]) {
+        m_KeyPressed[GLFW_KEY_ENTER] = false;
+    }
+}
+
+void Controller::Shuffle(GLFWwindow *window, VisualCube &cube, std::list<Rotation> &RotationOrder) {
+    if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS && !m_KeyPressed[GLFW_KEY_Z]) {
+        ComputeRotations(RotationOrder, window, cube.shuffle());
+        m_KeyPressed[GLFW_KEY_Z] = true;
+    } else if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_RELEASE && m_KeyPressed[GLFW_KEY_Z]) {
+        m_KeyPressed[GLFW_KEY_Z] = false;
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS && !m_KeyPressed[GLFW_KEY_X]) {
+        cube = VisualCube();
+        m_KeyPressed[GLFW_KEY_X] = true;
+    } else if (glfwGetKey(window, GLFW_KEY_X) == GLFW_RELEASE && m_KeyPressed[GLFW_KEY_X]) {
+        m_KeyPressed[GLFW_KEY_X] = false;
+    }
+}
+

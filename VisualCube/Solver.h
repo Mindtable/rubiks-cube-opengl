@@ -4,110 +4,111 @@
 
 #include "dependences.h"
 #include "Cube.h"
+#include <random>
 
 #ifndef GEN_ALGO_SOLVER_H
 #define GEN_ALGO_SOLVER_H
 
 
 class Solver {
+private:
+    std::random_device m_RD;
+    std::mt19937 m_RNG;
+
 public:
-    Solver() {
+    Solver() : m_RNG(m_RD()) {
         NumberOfCycles = 0;
         HowManyWorlds = 0;
         Elitaria = 0;
         NumberOfCubes = 0;
+
         srand(time(nullptr));
     }
 
     Solver(int population_size, int max_generations, int max_resets, int elitism_num)
-            : NumberOfCubes(population_size), NumberOfCycles(max_generations), HowManyWorlds(max_resets),
-              Elitaria(elitism_num) {
-        srand(time(nullptr));;
+            : m_RNG(m_RD()), NumberOfCubes(population_size), NumberOfCycles(max_generations), HowManyWorlds(max_resets),
+              Elitaria(elitism_num), m_ClassicMoveRandom(0, 17),
+              m_ElitariaRandom(0, Elitaria - 1),
+              m_EvolutionRandom(0, 5),
+              m_PermutationPoolRandom(0, 14),
+              m_RotationAxisRandom(0, 5),
+              m_RotationZRandom(0, 2) {
+        ;
     }
 
-    std::string solve(const std::string &scramble) {
+    std::string solve(const Cube &scrambledCube) {
+        if (scrambledCube.get_fitness() == 0) {
+            std::cout << "Naughty boy! Cube's already been solved" << std::endl;
+            return "";
+        }
+
+        std::cout << "Started solving..." << std::endl;
+
         for (int r = 0; r != HowManyWorlds; ++r) {
-//            std::cout << "try " << r +1 << std::endl;
-
-
             std::vector<Cube> cubes(NumberOfCubes);
             for (auto &cube: cubes) {
-                cube.exec_perm(scramble);
-                //FIXME Probably should use not c-rand function
-                cube.exec_perm(ClassicMoves[rand() % 18]);
-                cube.exec_perm(ClassicMoves[rand() % 18]);
+                cube = scrambledCube;
+                cube.exec_perm(ClassicMoves[m_ClassicMoveRandom(m_RNG)]);
+                cube.exec_perm(ClassicMoves[m_ClassicMoveRandom(m_RNG)]);
             }
 
             for (int g = 0; g != NumberOfCycles; ++g) {
-//                std::cout << "gen " << g +1 << std::endl;
-
-
-
                 std::sort(cubes.begin(), cubes.end(),
                           [](const Cube &a, const Cube &b) -> bool { return a.get_fitness() < b.get_fitness(); });
-
                 if (g % 30 == 0) {
-                    std::cout << g + 1  << " " <<  cubes[0].get_fitness() << std::endl;
+                    std::cout << g + 1 << " generation " << cubes[0].get_fitness() << " current fitness" << std::endl;
                 }
-//                std::cout << "qq";
-
                 for (int i = 0; i != NumberOfCubes; ++i) {
-//                    std::cout << "ent " << i +1 << std::endl;
-
                     if (cubes[i].get_fitness() == 0) {
-                        //FIXME
-//                        cubes[i].print();
                         std::string solution;
-                        std::cout << "Solution (including start permutation)\n";
                         for (const auto &elem: cubes[i].GetRoute()) {
                             solution += elem + " ";
-                            std::cout << elem << " ";
                         }
-                        std::cout << std::endl;
                         return solution;
                     }
 
                     if (i > Elitaria) {
-                        cubes[i] = cubes[rand() % Elitaria];
+                        cubes[i] = cubes[m_ElitariaRandom(m_RNG)];
 
-                        int evo_type = rand() % 6;
-
-
-//                        std::cout << "evo " << evo_type << std::endl;
-
-
+                        int evo_type = m_EvolutionRandom(m_RNG);
                         if (evo_type == 0) {
-                            cubes[i].exec_perm(PermutationPool.at(rand() % PermutationPool.size()));
+                            cubes[i].exec_perm(PermutationPool.at(m_PermutationPoolRandom(m_RNG)));
                         } else if (evo_type == 1) {
-                            cubes[i].exec_perm(PermutationPool.at(rand() % PermutationPool.size()));
-                            cubes[i].exec_perm(PermutationPool.at(rand() % PermutationPool.size()));
+                            cubes[i].exec_perm(PermutationPool.at(m_PermutationPoolRandom(m_RNG)));
+                            cubes[i].exec_perm(PermutationPool.at(m_PermutationPoolRandom(m_RNG)));
                         } else if (evo_type == 2) {
-                            cubes[i].exec_perm(RotationAxis[rand() % RotationAxis.size()]);
-                            cubes[i].exec_perm(PermutationPool.at(rand() % PermutationPool.size()));
+                            cubes[i].exec_perm(RotationAxis[m_RotationAxisRandom(m_RNG)]);
+                            cubes[i].exec_perm(PermutationPool.at(m_PermutationPoolRandom(m_RNG)));
                         } else if (evo_type == 3) {
-                            cubes[i].exec_perm(RotationZ[rand() % RotationZ.size()]);
-                            cubes[i].exec_perm(PermutationPool.at(rand() % PermutationPool.size()));
+                            cubes[i].exec_perm(RotationZ[m_RotationZRandom(m_RNG)]);
+                            cubes[i].exec_perm(PermutationPool.at(m_PermutationPoolRandom(m_RNG)));
                         } else if (evo_type == 4) {
-                            cubes[i].exec_perm(RotationAxis[rand() % RotationAxis.size()]);
-                            cubes[i].exec_perm(RotationZ[rand() % RotationZ.size()]);
-                            cubes[i].exec_perm(PermutationPool.at(rand() % PermutationPool.size()));
+                            cubes[i].exec_perm(RotationAxis[m_RotationAxisRandom(m_RNG)]);
+                            cubes[i].exec_perm(RotationZ[m_RotationZRandom(m_RNG)]);
+                            cubes[i].exec_perm(PermutationPool.at(m_PermutationPoolRandom(m_RNG)));
                         } else if (evo_type == 5) {
-                            cubes[i].exec_perm(RotationZ[rand() % RotationZ.size()]);
-                            cubes[i].exec_perm(RotationAxis[rand() % RotationAxis.size()]);
-                            cubes[i].exec_perm(PermutationPool.at(rand() % PermutationPool.size()));
+                            cubes[i].exec_perm(RotationZ[m_RotationZRandom(m_RNG)]);
+                            cubes[i].exec_perm(RotationAxis[m_RotationAxisRandom(m_RNG)]);
+                            cubes[i].exec_perm(PermutationPool.at(m_PermutationPoolRandom(m_RNG)));
                         }
                     }
                 }
-
-
             }
-
-
         }
+
+        return "";
     }
 
 private:
     int NumberOfCubes, NumberOfCycles, HowManyWorlds, Elitaria;
+
+    std::uniform_int_distribution<int> m_ClassicMoveRandom;
+    std::uniform_int_distribution<int> m_ElitariaRandom;
+    std::uniform_int_distribution<int> m_EvolutionRandom;
+    std::uniform_int_distribution<int> m_PermutationPoolRandom;
+    std::uniform_int_distribution<int> m_RotationAxisRandom;
+    std::uniform_int_distribution<int> m_RotationZRandom;
+
     const std::vector<std::string> ClassicMoves = {"U", "U'", "U2", "D", "D'", "D2", "R", "R'", "R2", "L", "L'",
                                                    "L2", "F", "F'", "F2", "B", "B'", "B2"};
     const std::vector<std::string> RotationAxis = {"x", "x'", "x2", "y", "y'", "y2"};

@@ -298,7 +298,6 @@ bool Cube::is_correct() {
 
                             return false;
                         } else {
-                            std::cerr << number << ' ' << ori << std::endl;
                             countCorners.erase(number);
                             totalOriCorners += ori;
                         }
@@ -364,10 +363,6 @@ bool Cube::is_correct() {
                     std::cout << "Impossible cube edges count" << std::endl;
                     return false;
                 }
-
-                std::cerr << faces[EdgeLayout[i][0]][EdgeIndices[i][0]][EdgeIndices[i][1]] * 10 +
-                             faces[EdgeLayout[i][1]][EdgeIndices[i][2]][EdgeIndices[i][3]] << ' ' << 0 << std::endl;
-
                 break;
             } else if (faces[EdgeLayout[i][0]][EdgeIndices[i][0]][EdgeIndices[i][1]] == static_cast<Color>(j[1]) &&
                        faces[EdgeLayout[i][1]][EdgeIndices[i][2]][EdgeIndices[i][3]] == static_cast<Color>(j[0])) {
@@ -382,9 +377,6 @@ bool Cube::is_correct() {
                     return false;
                 }
                 TotalOriEdges += 1;
-
-                std::cerr << faces[EdgeLayout[i][0]][EdgeIndices[i][0]][EdgeIndices[i][1]] * 10 +
-                             faces[EdgeLayout[i][1]][EdgeIndices[i][2]][EdgeIndices[i][3]] << ' ' << 1 << std::endl;
                 break;
             }
         }
@@ -397,4 +389,30 @@ bool Cube::is_correct() {
 
     std::cout << "Everything's OK" << std::endl;
     return true;
+}
+
+std::string Cube::shuffle() {
+    std::random_device RD;
+    std::mt19937 RNG(RD());
+    std::uniform_int_distribution<int> ClassicMoveRandom(0, 5);
+    std::uniform_int_distribution<int> SecondMoveRandom(0, 2);
+
+    const std::string ClassicMove = "UDFBLR";
+    const std::string SecondMove = " '2";
+
+    std::string res;
+
+    for (int i = 0; i != 30; ++i) {
+        char tmpMove = ClassicMove[ClassicMoveRandom(RNG)];
+
+        while (i != 0 && res[3 * (i - 1)] == tmpMove) {
+            tmpMove = ClassicMove[ClassicMoveRandom(RNG)];
+        }
+
+        res += tmpMove;
+        res += SecondMove[SecondMoveRandom(RNG)];
+        res += ' ';
+    }
+    return res;
+
 }

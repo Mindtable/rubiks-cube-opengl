@@ -9,14 +9,53 @@
 
 #ifndef FIXME_PLS_ROTATION
 #define FIXME_PLS_ROTATION
+
+enum class Axis {
+    X, Y, Z
+};
+
 struct Rotation {
     GLfloat deltaSign;
-    glm::vec3 axis;
-    glm::vec3 point;
+    glm::vec3 axis{};
+    glm::vec3 point{};
     std::set<int> CubesToRotateX;
     std::set<int> CubesToRotateY;
     std::set<int> CubesToRotateZ;
     std::string Move;
+
+    Rotation() {
+        deltaSign = 1.0f;
+        axis = glm::vec3(1.0f);
+        point = glm::vec3(1.0f);
+    }
+
+    Rotation(GLfloat deltaSign, Axis axis, const std::string &Move, std::initializer_list<int> CubesToRotate) {
+        this->deltaSign = deltaSign;
+        if (axis == Axis::X) {
+            this->axis = glm::vec3(1.0f, 0.0f, 0.0f);
+            this->point = glm::vec3(4.0f, 2.0f, -2.0f);
+
+            for (const auto &elem: CubesToRotate) {
+                this->CubesToRotateX.insert(elem);
+            }
+        } else if (axis == Axis::Y) {
+            this->axis = glm::vec3(0.0f, 1.0f, 0.0f);
+            this->point = glm::vec3(2.0f, 4.0f, -2.0f);
+
+            for (const auto &elem: CubesToRotate) {
+                this->CubesToRotateY.insert(elem);
+            }
+        } else if (axis == Axis::Z) {
+            this->axis = glm::vec3(0.0f, 0.0f, 1.0f);
+            this->point = glm::vec3(2.0f, 2.0f, 0.0f);
+
+            for (const auto &elem: CubesToRotate) {
+                this->CubesToRotateZ.insert(elem);
+            }
+        }
+
+        this->Move = Move;
+    }
 };
 
 #endif
@@ -30,7 +69,7 @@ enum class FileStatus {
     Write = 1,
 };
 
-enum class CubeStatus {
+enum class Status {
     Correct,
     Incorrect,
     DontAsked
@@ -77,16 +116,60 @@ private:
     glm::mat4 VP;
     bool moving = false;
 
+    std::map<std::string, Rotation> m_RotationMapping = {
+            {"z2", Rotation(1.0f, Axis::Z, "z2", {0, 1, 2})},
+            {"z'", Rotation(1.0f, Axis::Z, "z'", {0, 1, 2})},
+            {"z",  Rotation(-1.0f, Axis::Z, "z", {0, 1, 2})},
+
+            {"y2", Rotation(1.0f, Axis::Y, "y2", {0, 1, 2})},
+            {"y'", Rotation(1.0f, Axis::Y, "y'", {0, 1, 2})},
+            {"y",  Rotation(-1.0f, Axis::Y, "y", {0, 1, 2})},
+
+            {"x2", Rotation(1.0f, Axis::X, "x2", {0, 1, 2})},
+            {"x'", Rotation(1.0f, Axis::X, "x'", {0, 1, 2})},
+            {"x",  Rotation(-1.0f, Axis::X, "x", {0, 1, 2})},
+
+            {"U2", Rotation(1.0f, Axis::Y, "U2", {2})},
+            {"U'", Rotation(1.0f, Axis::Y, "U'", {2})},
+            {"U",  Rotation(-1.0f, Axis::Y, "U", {2})},
+
+            {"D2", Rotation(1.0f, Axis::Y, "D2", {0})},
+            {"D'", Rotation(-1.0f, Axis::Y, "D'",{0})},
+            {"D",  Rotation(1.0f, Axis::Y, "D",  {0})},
+
+            {"F2", Rotation(1.0f, Axis::Z, "F2", {0})},
+            {"F'", Rotation(1.0f, Axis::Z, "F'", {0})},
+            {"F",  Rotation(-1.0f, Axis::Z, "F", {0})},
+
+            {"B2", Rotation(1.0f, Axis::Z, "B2", {2})},
+            {"B'", Rotation(-1.0f, Axis::Z, "B'",{2})},
+            {"B",  Rotation(1.0f, Axis::Z, "B",  {2})},
+
+            {"R2", Rotation(1.0f, Axis::X, "R2", {2})},
+            {"R'", Rotation(1.0f, Axis::X, "R'", {2})},
+            {"R",  Rotation(-1.0f, Axis::X, "R", {2})},
+
+            {"L2", Rotation(1.0f, Axis::X, "L2", {0})},
+            {"L'", Rotation(-1.0f, Axis::X, "L'",{0})},
+            {"L",  Rotation(1.0f, Axis::X, "L",  {0})},
+
+            {"M2", Rotation(1.0f, Axis::X, "M2", {1})},
+            {"M'", Rotation(-1.0f, Axis::X, "M'",{1})},
+            {"M",  Rotation(1.0f, Axis::X, "M",  {1})}
+    };
+
 public:
     explicit Controller(bool moving);
 
     void ComputeProjectionView(Shader &shader, GLFWwindow *window);
 
     void ComputeRotations(std::list<Rotation> &RotationOrder, GLFWwindow *window);
+    void ComputeRotations(std::list<Rotation> &RotationOrder, GLFWwindow *window, const std::string &solution);
 
-    FileStatus FileWorkingCheck(GLFWwindow *window);
-
-    CubeStatus CheckCorrect(GLFWwindow *window, VisualCube &cube);
+    void FileWorkingCheck(GLFWwindow *window, FileStatus &file_status);
+    void Shuffle(GLFWwindow *window, VisualCube &cube, std::list<Rotation> &RotationOrder);
+    void GetAnimationSkipStatus(GLFWwindow *window, Status &AnimationSkip);
+    void CheckCorrect(GLFWwindow *window, VisualCube &cube, Status &CubeStatus);
 };
 
 #endif //GLUT_TEST_CONTROLLER_H
